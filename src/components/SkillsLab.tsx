@@ -177,11 +177,11 @@ export function Skills() {
                 <h3>{tool.n}</h3>
                 <p>{tool.note ?? "Part of my working toolbox."}</p>
                 <div className="d-use">
-                  <small>{tool.use.length ? "Used in" : "Where it lives"}</small>
+                  <small>{tool.use.length ? "Used in" : "How I use it"}</small>
                   <div>
                     {tool.use.length
                       ? tool.use.map((u) => <a key={u} href="#projects" className="used">{u}</a>)
-                      : <span className="used ghost">On my resume</span>}
+                      : <span className="used ghost">Everyday toolbox</span>}
                   </div>
                 </div>
               </div>

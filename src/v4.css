@@ -1,0 +1,14 @@
+/* ---------- v4: Moments as a normal swipeable row (no scroll hijacking) ---------- */
+.rail-shell { margin-top: 36px; }
+.rail-wrap { position: relative; height: auto; display: block; overflow-x: auto; overflow-y: hidden; margin-top: 0; padding: 6px 0 22px; scroll-snap-type: x proximity; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.rail-wrap::-webkit-scrollbar { display: none; }
+.rail-wrap:focus-visible { outline-offset: -4px; }
+.rail-track { display: flex; align-items: stretch; gap: 22px; width: max-content; padding: 0 max(20px, calc((100vw - 1180px) / 2)); transform: none !important; }
+.rail-intro { flex: 0 0 min(340px, 78vw); align-self: center; scroll-snap-align: start; }
+.rail-card.moment { height: min(520px, 70vh); scroll-snap-align: center; }
+.rail-ctl { display: flex; align-items: center; gap: 12px; width: min(1180px, 100% - 40px); margin: 0 auto; }
+.rail-progress { display: block; position: relative; flex: 1; height: 4px; margin: 0; border-radius: 4px; background: var(--line); overflow: hidden; }
+.rail-progress i { position: absolute; inset: 0; border-radius: 4px; transform-origin: left; transform: scaleX(.06); background: linear-gradient(90deg, var(--gold), var(--red)); box-shadow: 0 0 12px rgb(var(--red-rgb) / .7); transition: transform .12s linear; }
+.rail-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--ivory); font-size: 18px; transition: all .25s; }
+.rail-btn:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+@media (max-width: 900px) { .rail-card.moment { height: 440px; } }

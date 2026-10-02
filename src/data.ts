@@ -8,7 +8,6 @@ export const profile = {
   email: "satyaprabhasbulusu@gmail.com",
   github: "https://github.com/Satyav8",
   linkedin: "https://www.linkedin.com/in/satyaprabhas--/",
-  resume: "/assets/resume.pdf",
   codechef: "https://www.codechef.com/users/satya_v8",
   leetcode: "https://leetcode.com/u/omVRbHjefT/",
 };
@@ -16,7 +15,7 @@ export const profile = {
 export const heroStats = [
   { value: 97.0, decimals: 1, label: "Amazon ML Challenge score", suffix: "" },
   { value: 1.53, decimals: 2, label: "Amazon ML Challenge 2026 rank", prefix: "Top ", suffix: "%" },
-  { value: 9.0, decimals: 1, label: "CGPA, B.Tech CSE", suffix: "" },
+  { value: 2, decimals: 0, label: "Hackathon winner", suffix: "×" },
   { value: 4, decimals: 0, label: "AI internships", suffix: "" },
 ];
 
@@ -214,15 +213,15 @@ export const experience = [
 export type Moment = { img: string; title: string; text: string; tag: string; video?: string; wide?: boolean };
 
 export const moments: Moment[] = [
-  { img: "/assets/4.png", tag: "Winner", title: "1st Place, Sudhee Hackathon at CBIT", text: "Our team took first place at the Sudhee Hackathon hosted at CBIT and received certificates from the faculty. I also represented the institute at the national-level hackathon by OpenAI." },
+  { img: "/assets/4.webp", tag: "Winner", title: "1st Place, Sudhee Hackathon at CBIT", text: "Our team took first place at the Sudhee Hackathon hosted at CBIT and received certificates from the faculty. I also represented the institute at the national-level hackathon by OpenAI." },
   { img: "/assets/5.webp", tag: "Recognition", title: "Certificates of Merit, CBIT", text: "Certificates of Merit from the CBIT hackathon, presented alongside my teammate." },
-  { img: "/assets/6.png", tag: "Session", title: "Git & GitHub Session", text: "A hands-on session on version control, from git init and add to commits and pushing to GitHub, taught live to students at my college." },
-  { img: "/assets/tapasya-poster.jpg", video: "/assets/tapasya-session.mp4", tag: "Guest session", title: "AI for Entrepreneurs: Tapasya Session", text: "Delivered a session on using AI for entrepreneurs to students at Tapasya, taking questions from the audience. Press play to watch." },
-  { img: "/assets/3.jpg", tag: "Lecture", title: "Lecture on Machine Learning", text: "Delivered a lecture on Machine Learning to fellow students." },
+  { img: "/assets/6.webp", tag: "Session", title: "Git & GitHub Session", text: "A hands-on session on version control, from git init and add to commits and pushing to GitHub, taught live to students at my college." },
+  { img: "/assets/tapasya-poster.webp", video: "/assets/tapasya-session.mp4", tag: "Guest session", title: "AI for Entrepreneurs: Tapasya Session", text: "Delivered a session on using AI for entrepreneurs to students at Tapasya, taking questions from the audience. Press play to watch." },
+  { img: "/assets/3.webp", tag: "Lecture", title: "Lecture on Machine Learning", text: "Delivered a lecture on Machine Learning to fellow students." },
   { img: "/assets/devfest-2025.webp", tag: "Community", title: "Google DevFest Hyderabad 2025", text: "Part of Google Developer Groups Hyderabad's DevFest 2025." },
   { img: "/assets/iitg-ceremony.webp", wide: true, tag: "Graduation", title: "IIT Guwahati Certificate Distribution Ceremony", text: "Receiving my certificate on stage at IIT Guwahati." },
   { img: "/assets/iitg-batch.webp", wide: true, tag: "Graduation", title: "With the batch at IIT Guwahati", text: "The whole batch outside the IIT Guwahati main building, gamosas and certificate folders in hand." },
-  { img: "/assets/1.jpg", tag: "Graduation", title: "IIT Guwahati, DS & ML Minor", text: "Completed a Minor in Data Science and Machine Learning, September 2026." },
+  { img: "/assets/1.webp", tag: "Graduation", title: "IIT Guwahati, DS & ML Minor", text: "Completed a Minor in Data Science and Machine Learning, September 2026." },
 ];
 
 export const skills: Record<string, string[]> = {

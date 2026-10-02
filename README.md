@@ -20,7 +20,6 @@ npm run build    # type-check + production build into dist/
 | Project case studies (problem / how it works / result) | `src/studies.ts` |
 | Colours | CSS variables at the top of `src/styles.css` |
 | Photos and videos | `public/assets/` |
-| Resume | `public/assets/resume.pdf` (replace the file, keep the name) |
 | Page title, description, share image | `index.html`, `public/og.jpg` |
 
 Original, uncompressed videos are in `_orig/` (not deployed, not committed).

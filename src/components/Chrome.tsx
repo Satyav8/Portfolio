@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { profile } from "../data";
+import { toggleTheme, useTheme } from "../lib/theme";
 
 const seen = (() => {
   try { return sessionStorage.getItem("seen") === "1"; } catch { return false; }
 })();
 /** Hero text delay: wait for the boot loader on the first visit only. */
-export const HERO_DELAY = seen ? 0.1 : 1.9;
+export const HERO_DELAY = seen ? 0.05 : 0.4;
 
 export const SECTIONS = [
   { id: "top", label: "Home" },
@@ -24,7 +25,7 @@ export function Loader() {
   useEffect(() => {
     if (seen) return;
     try { sessionStorage.setItem("seen", "1"); } catch { /* private mode */ }
-    const t = setTimeout(() => setDone(true), 1700);
+    const t = setTimeout(() => setDone(true), 800);
     return () => clearTimeout(t);
   }, []);
   if (seen) return null;
@@ -42,38 +43,29 @@ export function Loader() {
   );
 }
 
-/** Decorative cursor ring + magnetic buttons. The native cursor stays visible. */
-export function Cursor() {
-  const ring = useRef<HTMLDivElement>(null);
+/** Magnetic buttons (fine pointers only). No custom cursor: the native pointer stays. */
+export function Magnetic() {
   useEffect(() => {
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    let x = 0, y = 0, rx = 0, ry = 0, raf = 0;
     let mag: HTMLElement | null = null;
     const move = (e: MouseEvent) => {
-      x = e.clientX; y = e.clientY;
-      const t = e.target as HTMLElement;
-      ring.current?.classList.toggle("hot", !!t.closest("a, button, .card, .moment"));
-      const b = t.closest(".btn") as HTMLElement | null;
+      const b = (e.target as HTMLElement).closest(".btn") as HTMLElement | null;
       if (mag && mag !== b) mag.style.transform = "";
       mag = b;
       if (b) {
         const r = b.getBoundingClientRect();
-        b.style.transform = `translate(${(x - r.left - r.width / 2) * 0.22}px, ${(y - r.top - r.height / 2) * 0.3}px)`;
+        b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.18}px, ${(e.clientY - r.top - r.height / 2) * 0.25}px)`;
       }
     };
-    const loop = () => {
-      rx += (x - rx) * 0.16; ry += (y - ry) * 0.16;
-      if (ring.current) ring.current.style.transform = `translate(${rx}px,${ry}px)`;
-      raf = requestAnimationFrame(loop);
-    };
-    window.addEventListener("mousemove", move);
-    loop();
-    return () => { window.removeEventListener("mousemove", move); cancelAnimationFrame(raf); };
+    const leave = () => { if (mag) mag.style.transform = ""; mag = null; };
+    window.addEventListener("mousemove", move, { passive: true });
+    document.addEventListener("mouseleave", leave);
+    return () => { window.removeEventListener("mousemove", move); document.removeEventListener("mouseleave", leave); };
   }, []);
-  return <div className="cursor-ring" ref={ring} aria-hidden />;
+  return null;
 }
 
-function useActive() {
+function useActive(rev: number) {
   const [active, setActive] = useState("top");
   useEffect(() => {
     const els = SECTIONS.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
@@ -83,14 +75,68 @@ function useActive() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [rev]);
   return active;
 }
 
-export function Nav({ onPalette }: { onPalette: () => void }) {
+/** The autograph as the logo: static finished signature; writes itself again on hover/focus. */
+function Logo({ onClick }: { onClick: () => void }) {
+  const [play, setPlay] = useState(0);
+  const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const src = play && !reduce ? `/assets/signature.webp?v=${play}` : "/assets/signature-static.webp";
+  return (
+    <a
+      href="#top"
+      className="logo"
+      aria-label="BVS Satya Prabhas, back to top"
+      onClick={onClick}
+      onMouseEnter={() => setPlay((p) => p + 1)}
+      onFocus={() => setPlay((p) => p + 1)}
+    >
+      <img src={src} alt="" width="182" height="48" decoding="async" />
+    </a>
+  );
+}
+
+export function ThemeToggle() {
+  const theme = useTheme();
+  const label = theme === "dark" ? "Switch to light theme" : "Switch to dark theme";
+  return (
+    <button
+      className="theme-btn"
+      aria-label={label}
+      title={label}
+      onClick={(e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        toggleTheme({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+      }}
+    >
+      <svg className="sun" viewBox="0 0 24 24" aria-hidden>
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+      </svg>
+      <svg className="moon" viewBox="0 0 24 24" aria-hidden>
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+      </svg>
+    </button>
+  );
+}
+
+const NAV_LINKS = [
+  { id: "about", label: "About" },
+  { id: "projects", label: "Projects" },
+  { id: "experience", label: "Experience" },
+  { id: "recognition", label: "Recognition" },
+  { id: "media", label: "Media" },
+  { id: "contact", label: "Contact" },
+];
+
+export function Nav({ onPalette, rev }: { onPalette: () => void; rev: number }) {
   const [stuck, setStuck] = useState(false);
+  const [open, setOpen] = useState(false);
   const bar = useRef<HTMLDivElement>(null);
-  const active = useActive();
+  const active = useActive(rev);
+
   useEffect(() => {
     const on = () => {
       setStuck(window.scrollY > 30);
@@ -101,22 +147,45 @@ export function Nav({ onPalette }: { onPalette: () => void }) {
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
   }, []);
-  const links = ["about", "projects", "experience", "recognition", "media", "contact"];
+
+  useEffect(() => {
+    if (!open) return;
+    const key = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const size = () => { if (window.innerWidth >= 900) setOpen(false); };
+    window.addEventListener("keydown", key);
+    window.addEventListener("resize", size);
+    return () => { window.removeEventListener("keydown", key); window.removeEventListener("resize", size); };
+  }, [open]);
+
+  const close = () => setOpen(false);
   return (
     <>
       <a className="skip" href="#main">Skip to content</a>
       <div className="progress" ref={bar} />
-      <nav className={`nav ${stuck ? "stuck" : ""}`} aria-label="Primary">
+      <nav className={`nav ${stuck || open ? "stuck" : ""} ${open ? "open" : ""}`} aria-label="Primary">
         <div className="wrap">
-          <a href="#top" className="logo">satya<b>.</b>dev</a>
+          <Logo onClick={close} />
           <ul>
-            {links.map((l) => (
-              <li key={l}><a href={`#${l}`} className={active === l ? "on" : ""}>{l[0].toUpperCase() + l.slice(1)}</a></li>
+            {NAV_LINKS.map((l) => (
+              <li key={l.id}><a href={`#${l.id}`} className={active === l.id ? "on" : ""}>{l.label}</a></li>
             ))}
           </ul>
           <div className="nav-r">
             <button className="kbd" onClick={onPalette} aria-label="Open command palette"><span>Ctrl</span><span>K</span></button>
-            <a className="btn primary" href={profile.resume} target="_blank" rel="noreferrer">Resume ↗</a>
+            <ThemeToggle />
+            <a className="btn primary nav-cta" href="#contact">Let&rsquo;s talk</a>
+            <button className="burger" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="mobile-nav" aria-label={open ? "Close menu" : "Open menu"}>
+              <i /><i /><i />
+            </button>
+          </div>
+        </div>
+        <div className="mnav" id="mobile-nav">
+          {NAV_LINKS.map((l) => (
+            <a key={l.id} className={`ml ${active === l.id ? "on" : ""}`} href={`#${l.id}`} onClick={close}>{l.label}</a>
+          ))}
+          <div className="m-row">
+            <a className="btn primary" href="#contact" onClick={close}>Let&rsquo;s talk</a>
+            <a className="btn" href={profile.github} target="_blank" rel="noreferrer">GitHub ↗</a>
           </div>
         </div>
       </nav>
@@ -139,7 +208,7 @@ export function Palette({ open, onClose }: { open: boolean; onClose: () => void 
 
   const cmds: Cmd[] = useMemo(() => [
     ...SECTIONS.map((s) => ({ label: s.label, hint: "Go to section", run: () => document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth" }) })),
-    { label: "Open resume", hint: "PDF", run: () => window.open(profile.resume, "_blank") },
+    { label: "Switch theme", hint: "Light / dark", run: () => toggleTheme() },
     { label: "GitHub", hint: "github.com/Satyav8", run: () => window.open(profile.github, "_blank") },
     { label: "LinkedIn", hint: "linkedin.com/in/satyaprabhas--", run: () => window.open(profile.linkedin, "_blank") },
     { label: "Watch the voice agent demo", hint: "Loom", run: () => window.open(profile.loom, "_blank") },

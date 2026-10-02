@@ -8,6 +8,19 @@
     <link rel="canonical" href="https://satyaprabhas.dev/" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#0b0706" />
+    <meta name="color-scheme" content="dark light" />
+    <script>
+      (function () {
+        try {
+          var q = new URLSearchParams(location.search).get("theme");
+          var t = q === "light" || q === "dark" ? q : localStorage.getItem("theme");
+          if (t !== "light" && t !== "dark") t = "dark";
+          document.documentElement.setAttribute("data-theme", t);
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute("content", t === "light" ? "#f6f0e6" : "#0b0706");
+        } catch (e) { document.documentElement.setAttribute("data-theme", "dark"); }
+      })();
+    </script>
     <meta name="author" content="BVS Satya Prabhas" />
 
     <meta property="og:type" content="website" />
@@ -35,10 +48,8 @@
         "knowsAbout": ["Voice AI", "Natural Language Processing", "Machine Learning", "LLM integration", "FastAPI"]
       }
     </script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/Syne-600.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/Inter-400.woff2" crossorigin />
     <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
   </head>
   <body>

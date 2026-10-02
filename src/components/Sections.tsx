@@ -1,14 +1,12 @@
 import { lazy, Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Counter, Reveal, SectionHead, useInView } from "./ui";
 import ProjectArt from "./Art";
+import Signature from "./Signature";
 import DemoCall from "./DemoCall";
 import { HERO_DELAY } from "./Chrome";
 import { studies } from "../studies";
 import { experience, heroStats, marquee, moments, moreRepos, profile, projects, type Moment, type Project } from "../data";
 
-gsap.registerPlugin(ScrollTrigger);
 const HeroScene = lazy(() => import("./HeroScene"));
 export { DemoCall };
 
@@ -59,7 +57,7 @@ export function Hero() {
         <div className="cta">
           <a className="btn primary" href="#demo">▶ Hear the voice agent</a>
           <a className="btn" href="#projects">View projects →</a>
-          <a className="btn" href={profile.resume} target="_blank" rel="noreferrer">Resume ↗</a>
+          <a className="btn" href="#contact">Get in touch</a>
         </div>
         <div className="stats">
           {heroStats.map((s) => (
@@ -90,24 +88,28 @@ export function About() {
       <div className="wrap about-grid">
         <Reveal>
           <div className="collage">
-            <figure className="c-main"><img src="/assets/1.jpg" alt="Satya in a suit and Assamese gamosa in front of IIT Guwahati" width="1024" height="1536" loading="lazy" /><figcaption>IIT Guwahati · Graduation</figcaption></figure>
+            <figure className="c-main"><img src="/assets/1.webp" alt="Satya in a suit and Assamese gamosa in front of IIT Guwahati" width="1024" height="1536" loading="lazy" /><figcaption>IIT Guwahati · Graduation</figcaption></figure>
             <figure className="c-b"><img src="/assets/iitg-ceremony.webp" alt="Satya receiving a certificate on stage at the IIT Guwahati certificate distribution ceremony" width="1600" height="717" loading="lazy" /><figcaption>Certificate ceremony</figcaption></figure>
             <figure className="c-c"><img src="/assets/iitg-batch.webp" alt="The graduating batch outside the IIT Guwahati main building" width="1600" height="717" loading="lazy" /><figcaption>The batch</figcaption></figure>
-            <figure className="c-d"><img src="/assets/2.jpg" alt="Satya sitting on a bench on the IIT Guwahati campus" width="1600" height="717" loading="lazy" /><figcaption>On campus</figcaption></figure>
+            <figure className="c-d"><img src="/assets/2.webp" alt="Satya sitting on a bench on the IIT Guwahati campus" width="1600" height="717" loading="lazy" /><figcaption>On campus</figcaption></figure>
           </div>
           </Reveal>
         <div>
-          <SectionHead eyebrow="02 / About">AI that picks up the <em>phone.</em></SectionHead>
+          <SectionHead eyebrow="02 / About">About <em>me.</em></SectionHead>
           <Reveal delay={0.1}>
             <p>
-              I'm a <strong>Voice AI Engineer</strong>. I build agents that answer real calls, understand Indian accents and dialects, and get real things done: booking hospital appointments, or turning a worried parent's call into a case file a psychologist can act on.
+              I&rsquo;m someone who started out simply wanting to understand how things work, and somehow ended up deep in the world of AI.
             </p>
             <p>
-              Under the hood it's ML craft: feature engineering, LightGBM, NLP and evaluation. That is what took <strong>Team Horizon to the top 1.53% at Amazon ML Challenge 2026</strong>, and why my agents ship with automated evals and test suites.
+              Over the past few years, I&rsquo;ve explored everything from software engineering and machine learning to LLMs, voice AI, and building things that actually work outside a notebook. I&rsquo;ve interned, built projects, broken things, fixed them, learned way more than I expected to&mdash;and slowly figured out that I enjoy being at the intersection of <strong>engineering and intelligence</strong>.
             </p>
             <p>
-              I recently completed a <strong>Minor in Data Science &amp; Machine Learning at IIT Guwahati</strong> alongside my B.Tech in CSE, and I'm Vice-Chairperson of ACM x IARE Hyderabad, where I teach, organise hackathons and lead 50+ members.
+              I&rsquo;m still learning, still experimenting, and probably always will be. Right now, I&rsquo;m focused on becoming the kind of engineer who doesn&rsquo;t just use AI, but <strong>builds with it, understands it, and pushes it further.</strong>
             </p>
+            <p>
+              I like difficult problems, messy ideas, and turning &ldquo;what if?&rdquo; into something real.
+            </p>
+            <Signature />
             <div className="chips">
               {["Voice AI", "Python", "FastAPI", "LLMs", "NLP", "React", "ETL"].map((c) => <span className="chip" key={c}>{c}</span>)}
             </div>
@@ -171,8 +173,8 @@ function Card({ p, idx }: { p: Project; idx: number }) {
           </button>
           <div className="study-body"><div>
             <div className="study-cols">
-              <div><h5>The problem</h5><p>{st.problem}</p><h5>The result</h5><p className="res">{st.result}</p></div>
-              <div><h5>How it works</h5><ul>{st.approach.map((a) => <li key={a}>{a}</li>)}</ul></div>
+              <div><h4>The problem</h4><p>{st.problem}</p><h4>The result</h4><p className="res">{st.result}</p></div>
+              <div><h4>How it works</h4><ul>{st.approach.map((a) => <li key={a}>{a}</li>)}</ul></div>
             </div>
             {st.why && (
               <table className="why"><tbody>{st.why.map((w) => (
@@ -187,11 +189,20 @@ function Card({ p, idx }: { p: Project; idx: number }) {
 }
 
 export function Projects() {
+  // Mount the first cards now and the rest one per idle slot (keeps main-thread tasks short).
+  const [shown, setShown] = useState(2);
+  useEffect(() => {
+    if (shown >= projects.length) return;
+    const w = window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number; cancelIdleCallback?: (i: number) => void };
+    const next = () => setShown((n) => Math.min(n + 1, projects.length));
+    const id = w.requestIdleCallback ? w.requestIdleCallback(next, { timeout: 300 }) : window.setTimeout(next, 40);
+    return () => { if (w.requestIdleCallback && w.cancelIdleCallback) w.cancelIdleCallback(id); else clearTimeout(id); };
+  }, [shown]);
   return (
     <section id="projects">
       <div className="wrap">
         <SectionHead eyebrow="03 / Selected work">Systems I've <em>built and shipped.</em></SectionHead>
-        <div className="proj-grid">{projects.map((p, i) => <Card p={p} idx={i} key={p.id} />)}</div>
+        <div className="proj-grid">{projects.slice(0, shown).map((p, i) => <Card p={p} idx={i} key={p.id} />)}</div>
         <Reveal>
           <div className="repos">
             {moreRepos.map((r) => (
@@ -209,11 +220,21 @@ export function Experience() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const fill = useRef<HTMLElement>(null);
   useEffect(() => {
-    const t = gsap.to(fill.current, {
-      scaleY: 1, ease: "none",
-      scrollTrigger: { trigger: wrapRef.current, start: "top 70%", end: "bottom 70%", scrub: true },
-    });
-    return () => { t.scrollTrigger?.kill(); t.kill(); };
+    const box = wrapRef.current;
+    const bar = fill.current;
+    if (!box || !bar) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const r = box.getBoundingClientRect();
+      const p = (window.innerHeight * 0.7 - r.top) / r.height;
+      bar.style.transform = `scaleY(${Math.min(1, Math.max(0, p))})`;
+    };
+    const on = () => { if (!raf) raf = requestAnimationFrame(update); };
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on);
+    update();
+    return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); cancelAnimationFrame(raf); };
   }, []);
   return (
     <section id="experience" style={{ background: "var(--bg2)" }}>
@@ -235,14 +256,14 @@ export function Experience() {
   );
 }
 
-function RailCard({ m }: { m: Moment }) {
+function RailCard({ m, near }: { m: Moment; near: boolean }) {
   const [play, setPlay] = useState(false);
   return (
     <figure className={`moment rail-card ${m.video ? "is-video" : ""} ${m.wide ? "is-wide" : ""}`}>
       {m.video && play ? (
         <video src={m.video} poster={m.img} controls autoPlay playsInline />
       ) : (
-        <img src={m.img} alt={m.title} decoding="async" draggable={false} />
+        <img src={near ? m.img : undefined} alt={m.title} decoding="async" draggable={false} />
       )}
       {m.video && !play && <button className="play-btn" onClick={() => setPlay(true)} aria-label={`Play: ${m.title}`}>▶</button>}
       {!(m.video && play) && <figcaption className="cap"><small>{m.tag}</small><h4>{m.title}</h4><p>{m.text}</p></figcaption>}
@@ -251,40 +272,43 @@ function RailCard({ m }: { m: Moment }) {
 }
 
 function MomentsRail() {
+  const [near, setNear] = useState(false);
   const wrap = useRef<HTMLDivElement>(null);
-  const track = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 901px)", () => {
-      const dist = () => Math.max(0, track.current!.scrollWidth - window.innerWidth);
-      const tween = gsap.to(track.current, {
-        x: () => -dist(), ease: "none",
-        scrollTrigger: { trigger: wrap.current, pin: true, scrub: 0.6, start: "top top", end: () => "+=" + dist(), invalidateOnRefresh: true },
-      });
-      return () => { tween.scrollTrigger?.kill(); tween.kill(); };
-    });
-    return () => mm.revert();
-  }, []);
   const bar = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setNear(true); io.disconnect(); } }, { rootMargin: "1200px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     const max = el.scrollWidth - el.clientWidth;
-    if (bar.current) bar.current.style.transform = `scaleX(${max > 0 ? Math.max(0.08, el.scrollLeft / max) : 1})`;
+    if (bar.current) bar.current.style.transform = `scaleX(${max > 0 ? Math.max(0.06, el.scrollLeft / max) : 1})`;
+  };
+  const by = (dir: number) => {
+    const el = wrap.current;
+    if (el) el.scrollBy({ left: dir * Math.min(560, el.clientWidth * 0.8), behavior: "smooth" });
   };
   return (
-    <>
-    <div className="rail-wrap" ref={wrap} onScroll={onScroll}>
-      <div className="rail-track" ref={track}>
-        <div className="rail-intro">
-          <div className="eyebrow">Moments</div>
-          <h3>Wins, talks<br />and the <em>stage.</em></h3>
-          <p>Hackathon podium, classrooms, a lecture hall and graduation. Scroll sideways.</p>
+    <div className="rail-shell">
+      <div className="rail-wrap" ref={wrap} onScroll={onScroll} tabIndex={0} role="region" aria-label="Moments gallery. Swipe or use the arrows to scroll sideways.">
+        <div className="rail-track">
+          <div className="rail-intro">
+            <div className="eyebrow">Moments</div>
+            <h3>Wins, talks<br />and the <em>stage.</em></h3>
+            <p>Hackathon podium, classrooms, a lecture hall and graduation. Swipe or use the arrows.</p>
+          </div>
+          {moments.map((m) => <RailCard key={m.title} m={m} near={near} />)}
         </div>
-        {moments.map((m) => <RailCard key={m.title} m={m} />)}
+      </div>
+      <div className="rail-ctl">
+        <div className="rail-progress" aria-hidden><i ref={bar} /></div>
+        <button className="rail-btn" onClick={() => by(-1)} aria-label="Scroll moments left">←</button>
+        <button className="rail-btn" onClick={() => by(1)} aria-label="Scroll moments right">→</button>
       </div>
     </div>
-    <div className="rail-progress" aria-hidden><i ref={bar} /></div>
-    </>
   );
 }
 
@@ -354,7 +378,7 @@ export function Contact() {
           <div className="cta" style={{ justifyContent: "center" }}>
             <a className="btn primary" href={`mailto:${profile.email}`}>Say hello →</a>
             <button className="btn" onClick={copy}>{copied ? "Copied ✓" : "Copy email"}</button>
-            <a className="btn" href={profile.resume} target="_blank" rel="noreferrer">Resume ↗</a>
+            <a className="btn" href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
           </div>
         </Reveal>
       </div>

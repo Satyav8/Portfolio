@@ -10,7 +10,7 @@ function Podcast() {
   const [playing, setPlaying] = useState(false);
   return (
     <div className="feat-media">
-      <video ref={v} controls={playing} preload="none" poster="/assets/nxtwave-poster.jpg" src="/assets/nxtwave-podcast.mp4" playsInline onPlay={() => setPlaying(true)} />
+      <video ref={v} controls={playing} preload="none" poster="/assets/nxtwave-poster.webp" src="/assets/nxtwave-podcast.mp4" playsInline onPlay={() => setPlaying(true)} />
       {!playing && (
         <button className="feat-play" onClick={() => { setPlaying(true); v.current?.play(); }} aria-label="Play Ask an Achiever">
           <span className="play">▶</span>
