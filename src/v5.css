@@ -188,3 +188,6 @@ body { transition: background-color .3s, color .3s; }
 .repos a { max-width: 100%; overflow-wrap: anywhere; }
 @media (max-width: 480px) { .pico { width: 44px; height: 44px; } .pipe-row { gap: 6px; } }
 @media (max-width: 480px) { .teach-card { grid-template-columns: 30px minmax(0, 1fr); } .teach-card span { text-align: center; } }
+
+/* the case-study panel always comes last (flipped cards order their text explicitly, which let the panel jump ahead of it) */
+.card > .study { order: 3; }
