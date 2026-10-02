@@ -2,6 +2,8 @@
 
 Portfolio for BVS Satya Prabhas, Voice AI Engineer. React + TypeScript + Vite, Three.js, GSAP, Lenis.
 
+Live site: https://satyaprabhas.dev
+
 ## Run locally
 
 ```bash
