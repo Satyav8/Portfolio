@@ -7,6 +7,11 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20.18.0
+    routes:
+      # The resume was removed from the site; old deploys can leave the file behind, so block the path.
+      - type: redirect
+        source: /assets/resume.pdf
+        destination: /
     headers:
       - path: /assets/*
         name: Cache-Control
