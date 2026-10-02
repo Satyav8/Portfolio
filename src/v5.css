@@ -150,3 +150,21 @@ body { transition: background-color .3s, color .3s; }
 .logo:hover img { transform: scale(1.04); }
 :root[data-theme="light"] .logo img { filter: invert(.9) drop-shadow(0 1px 0 rgb(0 0 0 / .08)); }
 @media (max-width: 420px) { .logo img { height: 40px; } }
+
+/* mobile: art/visuals must never be wider than their card (grid items default to min-width:auto) */
+.card > * { min-width: 0; }
+.viz { min-width: 0; max-width: 100%; }
+.art { min-width: 0; max-width: 100%; }
+.art > * { max-width: 100%; }
+.art small { white-space: normal; text-align: center; overflow-wrap: anywhere; }
+.art-kiro .fields, .art-chips, .art-pipe .nodes { max-width: 100%; }
+.art-kiro .bubble { max-width: 100%; overflow-wrap: anywhere; }
+@media (max-width: 520px) { .card { padding: 26px 22px; } .art { padding: 14px 10px; } .art-kiro .bubble { font-size: 34px; } }
+
+.metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.metrics div { min-width: 0; }
+.metrics b { overflow-wrap: anywhere; }
+@media (max-width: 520px) { .metrics { gap: 10px; } .metrics div { padding: 12px 12px; } .metrics b { font-size: 21px; } .metrics span { font-size: 11.5px; } }
+
+/* very narrow phones (<=340px): keep the hero name inside the screen */
+@media (max-width: 340px) { .hero h1 { font-size: 37px; } .hero .role b { font-size: 18px; } }
