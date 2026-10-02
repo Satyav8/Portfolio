@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: satyaprabhas-portfolio
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=86400, must-revalidate
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
