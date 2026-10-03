@@ -159,7 +159,6 @@ export const projects: Project[] = [
 ];
 
 export const moreRepos = [
-  { name: "Geometra", lang: "Python" },
   { name: "ConnectHub", lang: "JavaScript" },
   { name: "Bleeding_Detector", lang: "Python" },
   { name: "ML_coach", lang: "Python" },
