@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { profile } from "../data";
 import { toggleTheme, useTheme } from "../lib/theme";
+import { goTo, useTab } from "../lib/tabs";
 
 const seen = (() => {
   try { return sessionStorage.getItem("seen") === "1"; } catch { return false; }
@@ -10,13 +11,12 @@ export const HERO_DELAY = seen ? 0.05 : 0.4;
 
 export const SECTIONS = [
   { id: "top", label: "Home" },
-  { id: "demo", label: "Voice AI demo" },
   { id: "about", label: "About" },
   { id: "projects", label: "Projects" },
+  { id: "demo", label: "Voice demo" },
   { id: "experience", label: "Experience" },
   { id: "recognition", label: "Recognition" },
   { id: "media", label: "Media" },
-  { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -65,18 +65,19 @@ export function Magnetic() {
   return null;
 }
 
-function useActive(rev: number) {
-  const [active, setActive] = useState("top");
+function useActive(_rev: number) {
+  const tab = useTab();
+  const [area, setArea] = useState("top");
   useEffect(() => {
-    const els = SECTIONS.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
+    const els = ["top", "work", "contact"].map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
+      (entries) => entries.forEach((e) => e.isIntersecting && setArea(e.target.id)),
       { rootMargin: "-45% 0px -50% 0px" }
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, [rev]);
-  return active;
+  }, []);
+  return area === "work" ? tab : area;
 }
 
 /** The autograph as the logo: static finished signature; writes itself again on hover/focus. */
@@ -125,6 +126,7 @@ export function ThemeToggle() {
 const NAV_LINKS = [
   { id: "about", label: "About" },
   { id: "projects", label: "Projects" },
+  { id: "demo", label: "Demo" },
   { id: "experience", label: "Experience" },
   { id: "recognition", label: "Recognition" },
   { id: "media", label: "Media" },
@@ -189,11 +191,6 @@ export function Nav({ onPalette, rev }: { onPalette: () => void; rev: number }) 
           </div>
         </div>
       </nav>
-      <div className="dots" aria-hidden>
-        {SECTIONS.map((s) => (
-          <a key={s.id} href={`#${s.id}`} className={active === s.id ? "on" : ""}><span>{s.label}</span></a>
-        ))}
-      </div>
     </>
   );
 }
@@ -207,7 +204,7 @@ export function Palette({ open, onClose }: { open: boolean; onClose: () => void 
   const [copied, setCopied] = useState(false);
 
   const cmds: Cmd[] = useMemo(() => [
-    ...SECTIONS.map((s) => ({ label: s.label, hint: "Go to section", run: () => document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth" }) })),
+    ...SECTIONS.map((s) => ({ label: s.label, hint: "Go to section", run: () => goTo(s.id) })),
     { label: "Switch theme", hint: "Light / dark", run: () => toggleTheme() },
     { label: "GitHub", hint: "github.com/Satyav8", run: () => window.open(profile.github, "_blank") },
     { label: "LinkedIn", hint: "linkedin.com/in/satyaprabhas--", run: () => window.open(profile.linkedin, "_blank") },

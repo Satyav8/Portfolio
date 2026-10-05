@@ -33,6 +33,7 @@ export type Project = {
   stack: string[];
   links: { label: string; href: string }[];
   featured?: boolean;
+  tagline?: string;
   shot?: { src: string; alt: string };
   gallery?: { src: string; alt: string }[];
 };
@@ -42,8 +43,9 @@ export const projects: Project[] = [
     id: "2care",
     title: "Apollo Voice Receptionist",
     kicker: "Voice AI · Voice Agent-a-thon winner",
+    tagline: "Phone agent for Apollo Hospitals that books appointments end to end.",
     summary:
-      "Built for the Voice Agent-a-thon, which I won. A phone agent for Apollo Hospitals, Chennai. Patients call, speak naturally and book, reschedule or cancel appointments with no human involved. Fuzzy doctor-name matching and phonetic confirmation-code cleanup keep it accurate on noisy calls.",
+      "Built for the Voice Agent-a-thon, which I won. A phone agent for Apollo Hospitals, Chennai: patients call, speak naturally and book, reschedule or cancel appointments with no human involved. Fuzzy doctor-name matching and phonetic code cleanup keep it accurate on noisy calls.",
     metrics: [
       { v: "<1.5s", l: "response latency" },
       { v: "100%", l: "eval pass, 17 scenarios" },
@@ -60,8 +62,9 @@ export const projects: Project[] = [
     id: "kiro",
     title: "KIRO — Child Wellness Voice Agent",
     kicker: "Voice AI · Internship",
+    tagline: "Multilingual voice agent that turns a worried parent's call into a case file.",
     summary:
-      "The front door for Keep It Real Online India. A worried parent calls and speaks in English, Hindi, Telugu (Telangana and Andhra dialects) or most Indian languages. KIRO listens, asks one question at a time and turns the call into a structured case file with age, family setup, concern, sentiment and a provisional severity score. It never diagnoses, and every case reaches a psychologist with context.",
+      "The front door for Keep It Real Online India. A worried parent calls and speaks in English, Hindi, Telugu or most Indian languages. KIRO asks one question at a time and turns the call into a structured case file with a provisional severity score. It never diagnoses, and every case reaches a psychologist with context.",
     metrics: [
       { v: "EN·HI·TE", l: "plus other Indian languages" },
       { v: "$0.085", l: "per call minute" },
@@ -74,8 +77,9 @@ export const projects: Project[] = [
     id: "geometra",
     title: "S.A.M — Geometra Support Chatbot",
     kicker: "LLM Systems · Internship",
+    tagline: "Layered LLM support chatbot: regex, isolated classifiers, 3 safety layers.",
     summary:
-      "A two-pass LLM chatbot built as layers that each answer only what they can answer reliably. Regex short-circuits handle pricing, greetings and policy at zero LLM cost, small isolated classifiers handle open-ended judgments, and three independent safety layers fail open instead of breaking.",
+      "A two-pass LLM chatbot built as layers that each answer only what they can answer reliably: regex short-circuits at zero LLM cost, isolated classifiers for open-ended judgments, and three independent safety layers that fail open.",
     metrics: [
       { v: "363", l: "automated tests" },
       { v: "3", l: "safety layers" },
@@ -88,8 +92,9 @@ export const projects: Project[] = [
     id: "reelhaus",
     title: "ReelHaus — Club Events Platform",
     kicker: "Full-stack · Co-built with Manikanta Boda",
+    tagline: "Club events platform with ticketed registration and online payment.",
     summary:
-      "An events platform for the ReelHaus club that I built alongside Manikanta Boda. Members browse upcoming events and past highlights, meet the team and join, while an admin area manages events. Registration shows live seat counts and per-ticket pricing, then hands off to an online payment checkout.",
+      "An events platform for the ReelHaus club, built with Manikanta Boda. Members browse events and highlights, meet the team and join, an admin area manages events, and registration shows live seats and pricing before handing off to online payment.",
     metrics: [],
     stack: ["TypeScript", "Event ticketing", "Admin dashboard", "Cashfree payments"],
     links: [
@@ -107,6 +112,7 @@ export const projects: Project[] = [
     id: "broca",
     title: "Broca — Healthcare AI Assistant",
     kicker: "Health AI · Internship",
+    tagline: "Type 1 diabetes companion: forecasts lows 30 minutes ahead and reads lab reports.",
     summary:
       "A Type 1 diabetes companion. Its Glycemic Control Console scores CGM data against ATTD/ADA targets and forecasts dangerous lows 30 minutes ahead using signal processing, not a model call. It also reads lab reports (23 biomarkers) and turns grocery receipts into diet plans.",
     metrics: [
@@ -121,6 +127,7 @@ export const projects: Project[] = [
     id: "recovery",
     title: "Recovery Intelligence",
     kicker: "Health AI",
+    tagline: "Post-op monitoring with real-time risk scoring and automated alerts.",
     summary:
       "A post-operative monitoring platform with real-time risk scoring, automated Twilio alerts and AI-generated clinical summaries.",
     metrics: [
@@ -134,6 +141,7 @@ export const projects: Project[] = [
     id: "emolens",
     title: "EmoLens",
     kicker: "Deep Learning",
+    tagline: "Multimodal emotion detection across 7 categories, served in real time.",
     summary:
       "A multimodal emotion detection system across 7 emotion categories, served through a real-time inference pipeline.",
     metrics: [
@@ -147,6 +155,7 @@ export const projects: Project[] = [
     id: "mlc",
     title: "Amazon ML Challenge 2026 — Entity Resolution",
     kicker: "Machine Learning · Team Horizon",
+    tagline: "Entity resolution with LightGBM. Top 1.53% with Team Horizon.",
     summary:
       "Match every business in one source to its records in two others. Pipeline: normalize, block, 41 pair features, LightGBM, then one-to-one assignment with a threshold tuned for macro F0.5. Includes an Indian-script to English dictionary learned from training pairs. No GPU, no external data.",
     metrics: [
@@ -174,9 +183,8 @@ export const experience = [
     role: "AI Engineer Intern",
     when: "2026",
     points: [
-      "Designed S.A.M, a layered customer-support chatbot on Qdrant and Supabase.",
-      "Found that rules compete inside a 22,000-character prompt, so moved decisions into deterministic and isolated layers. Measured the same model at 10/12 inside the big prompt and 15/15 in isolation.",
-      "Shipped with 363 tests and a startup guard that refuses to boot on data-losing config.",
+      "Designed S.A.M, a layered support chatbot on Qdrant and Supabase, shipped with 363 tests.",
+      "Measured the same model at 10/12 inside a 22,000-character prompt and 15/15 in isolation, so moved rules into deterministic and isolated layers.",
     ],
   },
   {
@@ -184,8 +192,8 @@ export const experience = [
     role: "AI Engineer Intern",
     when: "2026",
     points: [
-      "Built a multilingual voice agent handling Telugu, Hindi and English dialects.",
-      "Structured free-flowing parent calls into case files with severity scoring for psychologists.",
+      "Built a multilingual voice agent for Telugu, Hindi and English dialects.",
+      "Turned free-flowing parent calls into structured case files with severity scoring for psychologists.",
     ],
   },
   {
@@ -193,8 +201,8 @@ export const experience = [
     role: "AI Engineer Intern",
     when: "2025",
     points: [
-      "Built a diabetes clinical companion with predictive hypoglycemia early warning.",
-      "Report analyzer with OCR and LLMs covering 95% of tested report formats; 70% faster interpretation.",
+      "Built a diabetes clinical companion with a 30-minute hypoglycemia early warning.",
+      "OCR + LLM report analyzer covering 95% of tested formats, with 70% faster interpretation.",
     ],
   },
   {
@@ -202,9 +210,8 @@ export const experience = [
     role: "AI/ML Engineering Intern",
     when: "Jul 2024 — Apr 2026",
     points: [
-      "Built ML pipelines that lifted model accuracy by 18% through feature engineering, tuning and ETL testing.",
+      "ML pipelines that lifted model accuracy by 18% through feature engineering, tuning and ETL testing.",
       "NLP and LLM analytics that cut manual analysis effort by 40% and data quality issues by 30%.",
-      "AI-driven automation for communication platforms.",
     ],
   },
 ];
