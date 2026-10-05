@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { profile } from "../data";
+import { track } from "../lib/analytics";
 
 type Line = { who: "patient" | "agent" | "tool"; text: string };
 
@@ -48,7 +49,7 @@ export default function DemoBody() {
               allowFullScreen
             />
           ) : (
-            <button className="facade" onClick={() => setLoaded(true)} aria-label="Play the Apollo voice agent demo">
+            <button className="facade" onClick={() => { setLoaded(true); track("demo_play"); }} aria-label="Play the Apollo voice agent demo">
               <span className="play">▶</span>
               <b>Apollo Voice Agent: real-time appointment demo</b>
               <small>The 2Care agent I built for the Voice Agent-a-thon, which I won</small>

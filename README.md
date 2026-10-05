@@ -41,3 +41,16 @@ Original, uncompressed videos are in `_orig/` (not deployed, not committed).
 6. Back in Render click **Verify**. HTTPS is issued automatically (`.dev` domains require HTTPS).
 
 After it is live, check the link preview with the LinkedIn Post Inspector.
+
+## Analytics (Umami Cloud, no cookies)
+
+1. Create a free site at https://cloud.umami.is (domain `satyaprabhas.dev`) and copy its **Website ID**.
+2. Paste it into `UMAMI_WEBSITE_ID` in `src/lib/analytics.ts`, commit and push.
+
+It never runs on localhost, respects Do Not Track, and loads after the page is idle.
+
+Events recorded: `tab_view`, `project_open`, `demo_play`, `podcast_play`, `youtube_play`, `moment_video_play`,
+`theme_toggle`, `email_click`, `email_copy`, `linkedin_click`, `github_click`, `outbound_click`, `tagged_visit`.
+
+Personal links: `https://satyaprabhas.dev/?ref=acme-recruiter` records a `tagged_visit` with `ref=acme-recruiter`.
+For sources like LinkedIn use `?utm_source=linkedin&utm_medium=post`; Umami shows UTM values automatically.

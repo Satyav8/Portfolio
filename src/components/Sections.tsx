@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
 import { Counter, Reveal } from "./ui";
 import { HERO_DELAY } from "./Chrome";
+import { track } from "../lib/analytics";
 import { heroStats, moments, profile, type Moment } from "../data";
 
 const HeroScene = lazy(() => import("./HeroScene"));
@@ -76,7 +77,7 @@ function RailCard({ m, near }: { m: Moment; near: boolean }) {
       ) : (
         <img src={near ? m.img : undefined} alt={m.title} decoding="async" draggable={false} />
       )}
-      {m.video && !play && <button className="play-btn" onClick={() => setPlay(true)} aria-label={`Play: ${m.title}`}>▶</button>}
+      {m.video && !play && <button className="play-btn" onClick={() => { setPlay(true); track("moment_video_play", { video: m.title }); }} aria-label={`Play: ${m.title}`}>▶</button>}
       {!(m.video && play) && <figcaption className="cap"><small>{m.tag}</small><h4>{m.title}</h4><p>{m.text}</p></figcaption>}
     </figure>
   );
@@ -122,6 +123,7 @@ export function MomentsRail() {
 export function Contact() {
   const [copied, setCopied] = useState(false);
   const copy = () => {
+    track("email_copy");
     navigator.clipboard?.writeText(profile.email).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1800); });
   };
   return (

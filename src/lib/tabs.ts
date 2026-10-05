@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { track } from "./analytics";
 
 /** The tabs of the single "work" panel. Every nav link, button and palette command routes through here. */
 export const TABS = [
@@ -28,6 +29,7 @@ export const startedOnTabHash = () => hashTab() !== null;
 export function setTab(id: TabId) {
   if (id === current) return;
   current = id;
+  track("tab_view", { tab: id });
   try { history.replaceState(null, "", `#${id}`); } catch { /* ignore */ }
   subs.forEach((f) => f());
 }

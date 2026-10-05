@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { track } from "../lib/analytics";
 
 function Eq() {
   return <span className="eq" aria-hidden>{[0, 1, 2, 3, 4].map((i) => <i key={i} style={{ animationDelay: `${i * -0.2}s` }} />)}</span>;
@@ -11,7 +12,7 @@ function Podcast() {
     <div className="feat-media">
       <video ref={v} controls={playing} preload="none" poster="/assets/nxtwave-poster.webp" src="/assets/nxtwave-podcast.mp4" playsInline onPlay={() => setPlaying(true)} />
       {!playing && (
-        <button className="feat-play" onClick={() => { setPlaying(true); v.current?.play(); }} aria-label="Play Ask an Achiever">
+        <button className="feat-play" onClick={() => { setPlaying(true); v.current?.play(); track("podcast_play"); }} aria-label="Play Ask an Achiever">
           <span className="play">▶</span>
         </button>
       )}
@@ -29,7 +30,7 @@ function YouTube() {
       ) : (
         <>
           <img src="https://i.ytimg.com/vi/E_X6gJHqB3c/hqdefault.jpg" alt="" loading="lazy" />
-          <button className="feat-play" onClick={() => setOn(true)} aria-label="Play the NxtWave YouTube video"><span className="play">▶</span></button>
+          <button className="feat-play" onClick={() => { setOn(true); track("youtube_play"); }} aria-label="Play the NxtWave YouTube video"><span className="play">▶</span></button>
         </>
       )}
       <span className="onair yt"><i /> YOUTUBE</span>

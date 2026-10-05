@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { track } from "./analytics";
 
 export type Theme = "dark" | "light";
 
@@ -16,6 +17,7 @@ type VTDocument = Document & { startViewTransition?: (cb: () => void) => { ready
 /** Toggle light/dark. Uses a circular reveal from the click point where the browser supports it. */
 export function toggleTheme(origin?: { x: number; y: number }) {
   const next: Theme = getTheme() === "dark" ? "light" : "dark";
+  track("theme_toggle", { theme: next });
   const d = document as VTDocument;
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (!d.startViewTransition || reduce) { apply(next); return; }

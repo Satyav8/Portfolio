@@ -8,6 +8,7 @@ import { MomentsRail } from "./Sections";
 import { ToolsCard } from "./SkillsLab";
 import Signature from "./Signature";
 import { Study, projectArt } from "./ProjectParts";
+import { track } from "../lib/analytics";
 
 /* ---------------- projects ---------------- */
 
@@ -55,7 +56,7 @@ function ProjectsPanel() {
     <>
       <div className="pgrid">
         {projects.map((p) => (
-          <button key={p.id} className={`pcard ${p.featured ? "flag" : ""}`} onClick={() => setSel(p)} aria-haspopup="dialog">
+          <button key={p.id} className={`pcard ${p.featured ? "flag" : ""}`} onClick={() => { setSel(p); track("project_open", { project: p.id }); }} aria-haspopup="dialog">
             <span className="pc-top"><small>{p.kicker}</small>{p.featured && <i title="Flagship project" aria-label="Flagship">★</i>}</span>
             <b className="pc-title">{p.title}</b>
             <span className="pc-line">{p.tagline}</span>

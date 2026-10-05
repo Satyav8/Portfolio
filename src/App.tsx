@@ -3,6 +3,7 @@ import { Loader, Magnetic, Nav, Palette } from "./components/Chrome";
 import { Contact, Hero } from "./components/Sections";
 import Work from "./components/Work";
 import { goTo, isTabId } from "./lib/tabs";
+import { initAnalytics, track } from "./lib/analytics";
 
 export default function App() {
   const [pal, setPal] = useState(false);
@@ -18,13 +19,31 @@ export default function App() {
   // Links like #projects / #about switch the tab (and bring the panel into view). Other #links scroll natively.
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      const a = (e.target as HTMLElement).closest('a[href^="#"]') as HTMLAnchorElement | null;
+      const a = (e.target as HTMLElement).closest("a[href]") as HTMLAnchorElement | null;
       if (!a) return;
-      const id = a.getAttribute("href")!.slice(1);
-      if (id && isTabId(id)) { e.preventDefault(); goTo(id); }
+      const raw = a.getAttribute("href")!;
+      if (raw.startsWith("#")) {
+        const id = raw.slice(1);
+        if (id && isTabId(id)) { e.preventDefault(); goTo(id); }
+        return;
+      }
+      if (raw.startsWith("mailto:")) { track("email_click"); return; }
+      if (a.hostname && a.hostname !== location.hostname) {
+        const host = a.hostname.replace(/^www\./, "");
+        if (host.includes("linkedin.com")) track("linkedin_click");
+        else if (host.includes("github.com")) track("github_click", { path: a.pathname.slice(0, 80) });
+        else track("outbound_click", { host });
+      }
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
+  }, []);
+
+  // Analytics loads after the page is idle so it never affects load speed.
+  useEffect(() => {
+    const w = window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };
+    if (w.requestIdleCallback) w.requestIdleCallback(initAnalytics, { timeout: 4000 });
+    else setTimeout(initAnalytics, 2000);
   }, []);
 
   return (
@@ -38,7 +57,7 @@ export default function App() {
         <Work />
         <Contact />
       </main>
-      <footer>© 2026 BVS Satya Prabhas · satyaprabhas.dev · Built with React &amp; Three.js</footer>
+      <footer>© 2026 BVS Satya Prabhas · satyaprabhas.dev · Built with React &amp; Three.js · Privacy-friendly analytics, no cookies</footer>
     </>
   );
 }
